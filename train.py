@@ -3,15 +3,19 @@ import os
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import wandb
 from torch.utils.data import DataLoader
 from torchvision import transforms
-
-from opt.option import args
-from data.LQGT_dataset import LQGTDataset
-from util.utils import RandCrop, RandHorizontalFlip, RandRotate, ToTensor, VGG19PerceptualLoss
-from model import encoder, decoder, discriminator
-
 from tqdm import tqdm
+
+from data.LQGT_dataset import LQGTDataset
+from model import decoder, discriminator, encoder
+from opt.option import args
+from util.utils import (RandCrop, RandHorizontalFlip, RandRotate, ToTensor,
+                        VGG19PerceptualLoss)
+
+wandb.init(project='SR', config=args)
+
 
 
 # device setting
@@ -57,6 +61,14 @@ model_Dec_SR = decoder.Decoder_SR_RRDB(num_in_ch=args.n_hidden_feats).cuda()
 # model_Disc_feat = discriminator.UNetDiscriminator(num_in_ch=64).cuda()
 # model_Disc_img_LR = discriminator.UNetDiscriminator(num_in_ch=3).cuda()
 # model_Disc_img_HR = discriminator.UNetDiscriminator(num_in_ch=3).cuda()
+
+# wandb logging
+wandb.watch(model_Disc_feat)
+wandb.watch(model_Disc_img_LR)
+wandb.watch(model_Enc)
+wandb.watch(model_Dec_Id)
+wandb.watch(model_Dec_SR)
+
 
 print("Define Loss")
 # loss
@@ -245,6 +257,9 @@ for epoch in range(start_epoch, args.epochs):
             loss_D_total = loss_Disc_feat_align + loss_Disc_img_rec + loss_Disc_img_sty + loss_Disc_img_cyc
             loss_D_total.backward()
             optimizer_D.step()
+
+
+
         scheduler_D.step()
 
 
@@ -331,8 +346,23 @@ for epoch in range(start_epoch, args.epochs):
         running_loss_sty += L_sty_G_t.item()
         running_loss_idt += L_idt_G_t.item()
         running_loss_cyc += L_cyc_G_t_G_SR.item()
+    
+            
+    wandb.log(
+        {
+            "epoch": epoch,
+            "lr": optimizer_G.param_groups[0]['lr'],
+            "loss_D_total": running_loss_D_total/iter,
+            "loss_G_total": running_loss_G_total/iter,
+            "loss_align": running_loss_align/iter,
+            "loss_rec": running_loss_rec/iter,
+            "loss_res": running_loss_res/iter,
+            "loss_sty": running_loss_sty/iter,
+            "loss_idt": running_loss_idt/iter,
+            "loss_cyc": running_loss_cyc/iter
+        }
+    )
 
-    print('epoch:%d, lr:%f, loss_D_total:%f, loss_G_total:%f, loss_align:%f, loss_rec:%f, loss_res:%f, loss_sty:%f, loss_idt:%f, loss_cyc:%f' % (epoch, optimizer_G.param_groups[0]['lr'], running_loss_D_total/iter, running_loss_G_total/iter, running_loss_align/iter, running_loss_rec/iter, running_loss_res/iter, running_loss_sty/iter, running_loss_idt/iter, running_loss_cyc/iter))
 
 
     if (epoch+1) % args.save_freq == 0:
