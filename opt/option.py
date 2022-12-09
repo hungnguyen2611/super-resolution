@@ -5,7 +5,7 @@ parser = argparse.ArgumentParser(description='BebyGAN')
 
 # Hardware specifications
 parser.add_argument('--gpu_id', type=str, default = "0", help='specify GPU ID to use')
-parser.add_argument('--num_workers', type=int, default=16)
+parser.add_argument('--num_workers', type=int, default=4)
 
 # Data specifications
 parser.add_argument('--dir_data', type=str, default='./dataset', help='dataset root directory')
@@ -33,7 +33,7 @@ parser.add_argument('--gamma_D', type=float, default=0.5, help='discriminator le
 
 # Train specificaions
 parser.add_argument('--snap_path', type=str, default='./weights', help='path to save model weights')
-parser.add_argument('--save_freq', type=str, default=10, help='save model frequency (epoch)')
+parser.add_argument('--save_freq', type=str, default=5, help='save model frequency (epoch)')
 # Logger 
 parser.add_argument('--log_interval', type=int, default=20)
 # checkpoint
