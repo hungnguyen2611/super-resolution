@@ -181,9 +181,9 @@ if args.pretrained is not None:
 # model_Disc_img_HR =model_Disc_img_HR.to(device)
 # training
 
-PSNR = PeakSignalNoiseRatio()
-SSIM = StructuralSimilarityIndexMeasure()
-LPIPS = LearnedPerceptualImagePatchSimilarity()
+PSNR = PeakSignalNoiseRatio().to(device)
+SSIM = StructuralSimilarityIndexMeasure().to(device)
+LPIPS = LearnedPerceptualImagePatchSimilarity(net_type='vgg').to(device)
 
 for epoch in range(start_epoch, args.epochs):
     # generator
