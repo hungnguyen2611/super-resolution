@@ -69,7 +69,7 @@ class UNetDiscriminator(nn.Module):
         super(UNetDiscriminator, self).__init__()
         self.skip_connection = skip_connection
         norm = spectral_norm
-
+        self.num_in_ch = num_in_ch
         self.conv0 = nn.Conv2d(num_in_ch, num_feat, kernel_size=3, stride=1, padding=1)
 
         self.conv1 = norm(nn.Conv2d(num_feat, num_feat*2, kernel_size=4, stride=2, padding=1, bias=False))
@@ -87,11 +87,7 @@ class UNetDiscriminator(nn.Module):
 
         self.conv9 = nn.Conv2d(num_feat, 1, kernel_size=3, stride=1, padding=1)
 
-        self.classifier = nn.Sequential(
-            nn.Linear(64*64, 100),
-            nn.LeakyReLU(negative_slope=0.2, inplace=True),
-            nn.Linear(100, 1)
-        )
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
     
     def forward(self, x):
         x0 = F.leaky_relu(self.conv0(x), negative_slope=0.2, inplace=True)
@@ -120,6 +116,6 @@ class UNetDiscriminator(nn.Module):
         out = F.leaky_relu(self.conv7(x6), negative_slope=0.2, inplace=True)
         out = F.leaky_relu(self.conv8(out), negative_slope=0.2, inplace=True)
         out = self.conv9(out)
+        out = self.avg_pool(out)
         out = torch.flatten(out, 1)
-        out = self.classifier(out)
         return out

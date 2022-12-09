@@ -8,11 +8,14 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from tqdm import tqdm
 
-from data.LQGT_dataset import LQGTDataset
+from data.LQGT_dataset import LQGTDataset, LQGTValDataset
 from model import decoder, discriminator, encoder
 from opt.option import args
-from util.utils import (RandCrop, RandHorizontalFlip, RandRotate, ToTensor,
+from util.utils import (RandCrop, RandHorizontalFlip, RandRotate, ToTensor, RandCrop_pair,
                         VGG19PerceptualLoss)
+
+from torchmetrics import PeakSignalNoiseRatio, StructuralSimilarityIndexMeasure
+from torchmetrics.image.lpip import LearnedPerceptualImagePatchSimilarity
 
 wandb.init(project='SR', config=args)
 
@@ -38,12 +41,25 @@ train_dataset = LQGTDataset(
     db_path=args.dir_data,
     transform=transforms.Compose([RandCrop(args.patch_size, args.scale), RandHorizontalFlip(), RandRotate(), ToTensor()])
 )
+
+val_dataset = LQGTValDataset(
+    db_path=args.dir_data,
+    transform=transforms.Compose([RandCrop_pair(args.patch_size, args.scale), ToTensor()])
+)
+
 train_loader = DataLoader(
     train_dataset,
     batch_size=args.batch_size,
     num_workers=args.num_workers,
     drop_last=True,
     shuffle=True
+)
+
+val_loader = DataLoader(
+    val_dataset,
+    batch_size=args.batch_size,
+    num_workers=args.num_workers,
+    shuffle=False
 )
 
 
@@ -164,6 +180,11 @@ if args.pretrained is not None:
 # model_Disc_img_LR = model_Disc_img_LR.to(device)
 # model_Disc_img_HR =model_Disc_img_HR.to(device)
 # training
+
+PSNR = PeakSignalNoiseRatio()
+SSIM = StructuralSimilarityIndexMeasure()
+LPIPS = LearnedPerceptualImagePatchSimilarity()
+
 for epoch in range(start_epoch, args.epochs):
     # generator
     model_Enc.train()
@@ -355,23 +376,56 @@ for epoch in range(start_epoch, args.epochs):
         running_loss_sty += L_sty_G_t.item()
         running_loss_idt += L_idt_G_t.item()
         running_loss_cyc += L_cyc_G_t_G_SR.item()
+        if iter % args.log_interval == 0:
+            wandb.log(
+                {
+                    "loss_D_total_step": running_loss_D_total/iter,
+                    "loss_G_total_step": running_loss_G_total/iter,
+                    "loss_align_step": running_loss_align/iter,
+                    "loss_rec_step": running_loss_rec/iter,
+                    "loss_res_step": running_loss_res/iter,
+                    "loss_sty_step": running_loss_sty/iter,
+                    "loss_idt_step": running_loss_idt/iter,
+                    "loss_cyc_step": running_loss_cyc/iter,
+                }
+            )
+    ### EVALUATE ###
+    total_PSNR = 0
+    total_SSIM = 0
+    total_LPIPS = 0
+    val_iter = 0
+    with torch.no_grad():
+        model_Enc.eval()
+        model_Dec_SR.eval()
+        for batch_idx, batch in enumerate(val_loader):
+            val_iter += 1
+            source = batch["img_LQ"].to(device)
+            target = batch["img_GT"].to(device)
+
+            feat = model_Enc(source)
+            out = model_Dec_SR(feat)
+
+            total_PSNR += PSNR(out, target)
+            total_SSIM += SSIM(out, target)
+            total_LPIPS += LPIPS(out, target)
     
-            
     wandb.log(
         {
             "epoch": epoch,
             "lr": optimizer_G.param_groups[0]['lr'],
-            "loss_D_total": running_loss_D_total/iter,
-            "loss_G_total": running_loss_G_total/iter,
-            "loss_align": running_loss_align/iter,
-            "loss_rec": running_loss_rec/iter,
-            "loss_res": running_loss_res/iter,
-            "loss_sty": running_loss_sty/iter,
-            "loss_idt": running_loss_idt/iter,
-            "loss_cyc": running_loss_cyc/iter
+            "loss_D_total_epoch": running_loss_D_total/iter,
+            "loss_G_total_epoch": running_loss_G_total/iter,
+            "loss_align_epoch": running_loss_align/iter,
+            "loss_rec_epoch": running_loss_rec/iter,
+            "loss_res_epoch": running_loss_res/iter,
+            "loss_sty_epoch": running_loss_sty/iter,
+            "loss_idt_epoch": running_loss_idt/iter,
+            "loss_cyc_epoch": running_loss_cyc/iter,
+            "PSNR_val": total_PSNR/val_iter,
+            "SSIM_val": total_SSIM/val_iter,
+            "LPIPS_val": total_LPIPS/val_iter
         }
     )
-
 
 
     if (epoch+1) % args.save_freq == 0:

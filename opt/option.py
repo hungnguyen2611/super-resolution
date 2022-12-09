@@ -34,7 +34,8 @@ parser.add_argument('--gamma_D', type=float, default=0.5, help='discriminator le
 # Train specificaions
 parser.add_argument('--snap_path', type=str, default='./weights', help='path to save model weights')
 parser.add_argument('--save_freq', type=str, default=10, help='save model frequency (epoch)')
-
+# Logger 
+parser.add_argument('--log_interval', type=int, default=20)
 # checkpoint
 parser.add_argument('--checkpoint', type=str, default=None, help='load checkpoint')
 # pretrained
