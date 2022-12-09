@@ -46,7 +46,7 @@ class LQGTDataset(Dataset):
 
 class LQGTValDataset(Dataset):
     def __init__(self, db_path, transform):
-        super(LQGTDataset, self).__init__()
+        super(LQGTValDataset, self).__init__()
         self.db_path = db_path
         self.transform = transform
 
