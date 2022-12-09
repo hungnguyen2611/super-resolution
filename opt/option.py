@@ -37,7 +37,8 @@ parser.add_argument('--save_freq', type=str, default=10, help='save model freque
 
 # checkpoint
 parser.add_argument('--checkpoint', type=str, default=None, help='load checkpoint')
-
+# pretrained
+parser.add_argument('--pretrained', type=str, default="pretrained/weights/ESRGAN_SRx4_DF2KOST_official-ff704c30.pth")
 # Optimizer specifications 
 parser.add_argument('--lambda_align', type=float, default=0.01, help='L1 loss weight')
 parser.add_argument('--lambda_rec', type=float, default=1.0, help='back-projection loss weight')

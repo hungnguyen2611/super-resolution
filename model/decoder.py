@@ -217,7 +217,6 @@ class Decoder_Id_RRDB(nn.Module):
 class Decoder_SR_RRDB(nn.Module):
     def __init__(self, num_in_ch, num_out_ch=3, scale=4, num_feat=64, num_block=23, num_grow_ch=32):
         super(Decoder_SR_RRDB, self).__init__()
-
         self.conv_first = nn.Conv2d(num_in_ch, num_feat, 3, 1, 1)
         self.body = make_layer(RRDB, num_block, num_feat=num_feat, num_grow_ch=num_grow_ch)
         self.conv_body = nn.Conv2d(num_feat, num_feat, 3, 1, 1)

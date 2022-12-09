@@ -48,19 +48,19 @@ train_loader = DataLoader(
 
 
 print("Create model")
-model_Disc_feat = discriminator.DiscriminatorVGG(in_ch=args.n_hidden_feats, image_size=args.patch_size).cuda()
-model_Disc_img_LR = discriminator.DiscriminatorVGG(in_ch=3, image_size=args.patch_size).cuda()
-model_Disc_img_HR = discriminator.DiscriminatorVGG(in_ch=3, image_size=args.scale*args.patch_size).cuda()
+model_Disc_feat = discriminator.UNetDiscriminator(num_in_ch=args.n_hidden_feats).to(device)
+model_Disc_img_LR = discriminator.UNetDiscriminator(num_in_ch=3).to(device)
+model_Disc_img_HR = discriminator.UNetDiscriminator(num_in_ch=3).to(device)
 # define model (generator)
-model_Enc = encoder.Encoder_RRDB(num_feat=args.n_hidden_feats).cuda()
-model_Dec_Id = decoder.Decoder_Id_RRDB(num_in_ch=args.n_hidden_feats).cuda()
-model_Dec_SR = decoder.Decoder_SR_RRDB(num_in_ch=args.n_hidden_feats).cuda()
+model_Enc = encoder.Encoder_RRDB(num_feat=args.n_hidden_feats).to(device)
+model_Dec_Id = decoder.Decoder_Id_RRDB(num_in_ch=args.n_hidden_feats).to(device)
+model_Dec_SR = decoder.Decoder_SR_RRDB(num_in_ch=args.n_hidden_feats).to(device)
 
 # define model (discriminator)
 
-# model_Disc_feat = discriminator.UNetDiscriminator(num_in_ch=64).cuda()
-# model_Disc_img_LR = discriminator.UNetDiscriminator(num_in_ch=3).cuda()
-# model_Disc_img_HR = discriminator.UNetDiscriminator(num_in_ch=3).cuda()
+# model_Disc_feat = discriminator.UNetDiscriminator(num_in_ch=64).to(device)
+# model_Disc_img_LR = discriminator.UNetDiscriminator(num_in_ch=3).to(device)
+# model_Disc_img_HR = discriminator.UNetDiscriminator(num_in_ch=3).to(device)
 
 # wandb logging
 wandb.watch(model_Disc_feat)
@@ -72,10 +72,10 @@ wandb.watch(model_Dec_SR)
 
 print("Define Loss")
 # loss
-loss_L1 = nn.L1Loss().cuda()
-loss_MSE = nn.MSELoss().cuda()
-loss_adversarial = nn.BCEWithLogitsLoss().cuda()
-loss_percept = VGG19PerceptualLoss().cuda()
+loss_L1 = nn.L1Loss().to(device)
+loss_MSE = nn.MSELoss().to(device)
+loss_adversarial = nn.BCEWithLogitsLoss().to(device)
+loss_percept = VGG19PerceptualLoss().to(device)
 
 
 print("Define Optimizer")
@@ -142,6 +142,15 @@ if args.checkpoint is not None:
     start_epoch = checkpoint['epoch']
 else:
     start_epoch = 0
+
+
+if args.pretrained is not None:
+    ckpt = torch.load(args.pretrained)
+    ckpt["params"]["conv_first.weight"] = ckpt["params"]["conv_first.weight"][:,0,:,:].expand(64,64,3,3)
+    model_Dec_SR.load_state_dict(ckpt["params"])
+    
+
+
 
 
 

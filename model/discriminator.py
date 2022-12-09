@@ -86,6 +86,12 @@ class UNetDiscriminator(nn.Module):
         self.conv8 = norm(nn.Conv2d(num_feat, num_feat, kernel_size=3, stride=1, padding=1, bias=False))
 
         self.conv9 = nn.Conv2d(num_feat, 1, kernel_size=3, stride=1, padding=1)
+
+        self.classifier = nn.Sequential(
+            nn.Linear(64*64, 100),
+            nn.LeakyReLU(negative_slope=0.2, inplace=True),
+            nn.Linear(100, 1)
+        )
     
     def forward(self, x):
         x0 = F.leaky_relu(self.conv0(x), negative_slope=0.2, inplace=True)
@@ -94,17 +100,17 @@ class UNetDiscriminator(nn.Module):
         x3 = F.leaky_relu(self.conv3(x2), negative_slope=0.2, inplace=True)
 
         # upsample
-        x3 = F.interpolate(x3, scale_factor=2, mode='bilinear', align_coners=False)
+        x3 = F.interpolate(x3, scale_factor=2, mode='bilinear')
         x4 = F.leaky_relu(self.conv4(x3), negative_slope=0.2, inplace=True)
 
         if self.skip_connection:
             x4 = x4 + x2
-        x4 = F.interpolate(x4, scale_factor=2, mode='bilinear', align_corners=False)
+        x4 = F.interpolate(x4, scale_factor=2, mode='bilinear')
         x5 = F.leaky_relu(self.conv5(x4), negative_slope=0.2, inplace=True)
 
         if self.skip_connection:
             x5 = x5 + x1
-        x5 = F.interpolate(x5, scale_factor=2, mode='bilinear', align_corners=False)
+        x5 = F.interpolate(x5, scale_factor=2, mode='bilinear')
         x6 = F.leaky_relu(self.conv6(x5), negative_slope=0.2, inplace=True)
 
         if self.skip_connection:
@@ -114,5 +120,6 @@ class UNetDiscriminator(nn.Module):
         out = F.leaky_relu(self.conv7(x6), negative_slope=0.2, inplace=True)
         out = F.leaky_relu(self.conv8(out), negative_slope=0.2, inplace=True)
         out = self.conv9(out)
-
+        out = torch.flatten(out, 1)
+        out = self.classifier(out)
         return out
