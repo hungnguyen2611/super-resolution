@@ -39,7 +39,7 @@ parser.add_argument('--log_interval', type=int, default=20)
 # checkpoint
 parser.add_argument('--checkpoint', type=str, default=None, help='load checkpoint')
 # pretrained
-parser.add_argument('--pretrained', type=str, default="pretrained/weights/ESRGAN_SRx4_DF2KOST_official-ff704c30.pth")
+parser.add_argument('--pretrained', type=str, default=None)
 # Optimizer specifications 
 parser.add_argument('--lambda_align', type=float, default=0.01, help='L1 loss weight')
 parser.add_argument('--lambda_rec', type=float, default=1.0, help='back-projection loss weight')
@@ -58,6 +58,8 @@ parser.add_argument('--n_gen', type=int, default=2, help='number of iteration fo
 # encoder & decoder specifications
 parser.add_argument('--n_hidden_feats', type=int, default=64, help='number of feature vectors in hidden layer')
 parser.add_argument('--n_sr_feats', type=int, default=64, help='number of feature vectors in RRDB layer')
+# eval spec
+parser.add_argument('--phase', type=str, default='train')
 
 # test specifications
 parser.add_argument('--weights', type=str, default = "/data4/anhdh4/SR2/USR_DA-main/weights/epoch_1660.pth",help='load weights for test')
