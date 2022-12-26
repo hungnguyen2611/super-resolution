@@ -62,6 +62,9 @@ def predict(img):
     global model
     img.save("test/1.png", "PNG")
     image = cv2.imread("test/1.png", cv2.IMREAD_COLOR)
+    if image.shape[0] > 300 or image.shape[1] > 300:
+        raise gr.Error(
+            f'Image is too large. Please uploade <= 300 px img')
     out = model.predict(img=image)
 
     cv2.imwrite(f'images_uploaded/1.png', out)
