@@ -88,7 +88,7 @@ if __name__ == '__main__':
         description=description,
         article=article,
         examples=examples,
-        ).launch(enable_queue=True)
+        ).launch(enable_queue=True, share=True)
 
 
 
