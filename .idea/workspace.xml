@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="18bcbc5d-a951-4b90-b3f2-5311ece97dd7" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/USR-DA/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/USR-DA/MeasureV1.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/USR-DA/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/USR-DA/compare.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/USR-DA/crop_test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/USR-DA/images_uploaded/0805.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/USR-DA/images_uploaded/0821.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/USR-DA/images_uploaded/0873.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/USR-DA/inference.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/USR-DA/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/USR-DA/model/decoder.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/USR-DA/model/discriminator.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/USR-DA/model/encoder.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/USR-DA/opt/option.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/USR-DA/requirements.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/USR-DA/train.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/USR-DA/util/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/USR-DA/weights/best_weight.pth" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2L5X4IlC2dI7sillIjS7aGH5baR" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/ds/Documents/SR/USR_DA/pretrained&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/pretrained" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="18bcbc5d-a951-4b90-b3f2-5311ece97dd7" name="Changes" comment="" />
+      <created>1675161725367</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1675161725367</updated>
+      <workItem from="1675161726442" duration="1795000" />
+      <workItem from="1675180265987" duration="3778000" />
+      <workItem from="1675219992576" duration="29000" />
+      <workItem from="1675224093040" duration="5000" />
+      <workItem from="1676974368602" duration="1659000" />
+      <workItem from="1677045011110" duration="3000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
