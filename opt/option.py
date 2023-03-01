@@ -38,9 +38,7 @@ parser.add_argument('--save_freq', type=str, default=5, help='save model frequen
 parser.add_argument('--log_interval', type=int, default=20)
 # checkpoint
 parser.add_argument('--checkpoint', type=str, default=None, help='load checkpoint')
-# pretrained
-parser.add_argument('--pretrained', type=str, default=None)
-# Optimizer specifications 
+# Optimizer specifications
 parser.add_argument('--lambda_align', type=float, default=0.01, help='L1 loss weight')
 parser.add_argument('--lambda_rec', type=float, default=1.0, help='back-projection loss weight')
 parser.add_argument('--lambda_res', type=float, default=1.0, help='perceptual loss weight')
